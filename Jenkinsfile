@@ -1,25 +1,31 @@
 pipeline {
-     agent any 
-     environment{
-        PYTHON = 'C:\\Users\\nextgen\\AppData\\Local\\Programs\\Python\\Python312\\python.exe extract_file.py'
-     }
-        stages{
-            stage('Checkout Code'){
-                checkout scm
-            }
-            stage('Extract Data'){
-                bat "${env.PYTHON} extract_file.py"
+    agent any
+
+    stages {
+
+        stage('Checkout Code') {
+            steps {
+                git 'https://github.com/nafisakhan05/jenkinsdemo3.git'
             }
         }
-        post {
-            success {
-                echo "Success..."
+
+        stage('Extract Data') {
+            steps {
+                bat 'python extract.py'
             }
-            failure {
-                echo "Failure..."
+        }
+
+        stage('Transform Data') {
+            steps {
+                bat 'python transform.py'
             }
-            always{
-               echo "Always..."
+        }
+
+        stage('Load Data') {
+            steps {
+                bat 'python load.py'
             }
-        } 
+        }
+
+    }
 }
